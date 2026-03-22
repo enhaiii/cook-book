@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная</title>
+    <link rel="stylesheet" href="./style/main_style.css">
+</head>
+<body>
+    <header>
+        <div class="menu">
+            <div class="head_content">
+                <img src="./media/logo.svg" alt="logo" class="logo">
+                <div class="search">
+                    <input type="text" placeholder="Поиск рецепта..">
+                    <a href="#"><img src="./media/lupa.svg" alt="lupa" class="lupa"></a>
+                </div>
+                <div class="pages">
+                    <a href="main.html" class="name_page">Рецепты</a>
+                    <a href="#" class="name_page">Статьи</a>
+                </div>
+                <a href="#" class="button_sign_in"><p class="sign_in">Войти</p></a>
+            </div>
+        </div>
+    </header>    
+    <main>
+        <div class="content">
+            <div class="for_all_category">
+                <div class="for_category">
+                    <p class="category">Категории</p>
+                    <a href="#"><img src="./media/arrow.svg" alt="arrow" class="arrow_category" id="arrow"></a>
+                </div>
+                <div class="all_category hidden" id="categoryMenu">
+                    <a href="#"><p class="name_category">Завтраки</p></a>
+                    <a href="#"><p class="name_category">Обеды</p></a>
+                    <a href="#"><p class="name_category">Ужины</p></a>
+                    <a href="#"><p class="name_category">Десерты</p></a>
+                    <a href="#"><p class="name_category">Закуски</p></a>
+                    <a href="#"><p class="name_category">Салаты</p></a>
+                    <a href="#"><p class="name_category">Гарниры</p></a>
+                    <a href="#"><p class="name_category">Выпечка</p></a>
+                    <a href="#"><p class="name_category">Напитки</p></a>
+                    <a href="#"><p class="name_category">Соусы и маринады</p></a>
+                    <a href="#"><p class="name_category">Доступные ЗОЖ</p></a>
+                </div>
+            </div>
+            <div class="for_cards">
+                <a href="recipe.html">
+                    <div class="card">
+                        <div class="for_puncake">
+                            <div class="for_time">
+                                <img src="./media/clock.svg" alt="clock" class="clock">
+                                <p class="time">30 мин</p>
+                            </div>
+                        </div>
+                        <div class="text_block">
+                            <p class="name_recipe">Панкейки</p>
+                            <p class="description_recipe">Один из самых популярных американских завтраков выглядит именно так. Пышные и чуточку пористые панкейки — это нечто среднее между оладьями и блинами.  В них добавляют масло..</p>
+                        </div>
+                    </div>
+                </a>
+                <div class="card">
+                    <div class="for_sandwich">
+                        <div class="for_time">
+                            <img src="./media/clock.svg" alt="clock" class="clock">
+                            <p class="time">20 мин</p>
+                        </div>
+                    </div>
+                    <div class="text_block">
+                        <p class="name_recipe">Кубинские сэндвичи</p>
+                        <p class="description_recipe">Сытные горячие сэндвичи с мясом и расплавленным сыром когда-то были популярным обедом рабочих кубинских сигарных фабрик, а со временем их полюбили и в США. Хлеб и ....</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <script src="./js/script_main.js"></script>
+    </main>
+    <footer>
+        <div class="main_footer">
+            <div class="footer_content">
+                <div class="top">
+                    <img src="./media/logo.svg" alt="logo" class="logo_footer">
+                    <div class="column">
+                        <p class="text_page">Рецепты</p>
+                        <p class="text_page">Статьи</p>
+                        <p class="text_page">Профиль</p>
+                    </div>
+                    <div class="column">
+                        <p class="text_page">Любимое</p>
+                        <p class="text_page">Мои рецепты</p>
+                        <p class="text_page">Мои комментарии</p>
+                    </div>
+                </div>
+                <div class="bottom">
+                    <p class="prava">© 2025 Харченко К.А.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
