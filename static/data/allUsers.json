@@ -1,0 +1,43 @@
+[
+    {
+        "id": "1",
+        "name": "Максим",
+        "password": "qaz4wsx!9",
+        "email": "maksim@gmail.com",
+        "favorites": [1, 2],
+        "reviews": [1],
+        "grades": {
+            "1": 5,
+            "2": 5,
+            "3": 4
+        }
+    },
+
+    {
+        "id": "2",
+        "name": "Мария",
+        "password": "123456789Y",
+        "email": "marIII@gmail.com",
+        "favorites": [1, 2, 3],
+        "reviews": [2],
+        "grades": {
+            "1": 5,
+            "2": 5,
+            "3": 5
+        }
+    },
+
+    {
+        "id": "3",
+        "name": "Кира",
+        "password": "cool666COOL",
+        "email": "k1raaA@gmail.com",
+        "favorites": [1],
+        "reviews": [3, 4],
+        "grades": {
+            "1": 5,
+            "2": 4,
+            "3": 3
+        }
+    }
+]
