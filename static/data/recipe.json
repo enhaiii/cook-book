@@ -156,7 +156,7 @@
 
     {
         "id": 3,
-        "img": "./static/media/paste_with_broccoli.svg",
+        "img": "./static/media/pasta_with_broccoli.svg",
         "title": "Паста с брокколи и зеленью",
         "cookingTime": 30, 
         "tags": ["Ужины", "Доступные ЗОЖ"],

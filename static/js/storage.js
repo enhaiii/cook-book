@@ -1,6 +1,6 @@
 import defaultUsers from "../data/allUsers.json" with {type: 'json'}
-import defaultMovies from "../data/recipe.json" with {type: 'json'}
-import defaultReviews from "../data/comments.json" with {type: 'json'}
+import defaultRecipes from "../data/recipe.json" with {type: 'json'}
+import defaultComments from "../data/comments.json" with {type: 'json'}
 
 export class Storage {
     saveUsers = (users) => {
@@ -18,19 +18,15 @@ export class Storage {
         if (users !== null && users !== undefined) {
             return JSON.parse(users)
         } else {
-            this.saveUsers(allUsers)
-            return allUsers
+            // Исправлено: allUsers → defaultUsers
+            this.saveUsers(defaultUsers)
+            return defaultUsers
         }
     }
 
     getCurrentUser = () => {
         const currentUser = localStorage.getItem("currentUser")
-
-        if (currentUser) {
-            return JSON.parse(currentUser)
-        } else {
-            return null
-        }
+        return currentUser ? JSON.parse(currentUser) : null
     }
 
     setCurrentUser = (currentUser) => {
@@ -51,6 +47,7 @@ export class Storage {
         if (recipes !== null) {
             return JSON.parse(recipes)
         } else {
+            // Исправлено: defaultRecipes (ранее был defaultMovies)
             this.saveRecipe(defaultRecipes)
             return defaultRecipes
         }
@@ -62,12 +59,7 @@ export class Storage {
 
     getCurrentRecipe = () => {
         let currentRecipe = localStorage.getItem("currentRecipe")
-
-        if (currentRecipe !== null) {
-            return JSON.parse(currentRecipe)
-        } else {
-            return null
-        }
+        return currentRecipe ? JSON.parse(currentRecipe) : null
     }
 
     saveComments = (comments) => {
@@ -76,62 +68,70 @@ export class Storage {
 
     getComments = () => {
         const comments = localStorage.getItem("Comments")
-
-        if (comments !== null) {
-            return JSON.parse(comments)
-        } else {
-            this.saveComments(defaultComments)
-            return defaultComments
-        }
+        return comments ? JSON.parse(comments) : defaultComments
     }
 
     saveComment = (userId, recipeId, comm, date) => {
-
         let comments = this.getComments()
         let users = this.getUsers()
+        
+        const user = users.find(u => u.id == userId)
+        if (!user) {
+            console.error('Пользователь не найден')
+            return
+        }
 
         let comment = {
             "id": comments.length + 1,
             "recipeId": recipeId,
             "userId": userId,
             "comm": comm,
-            "date": date
+            "date": date || new Date().toLocaleDateString()
         }
 
-        users[Number(userId) - 1].comments.push(comment.id)
+        if (!user.comments) user.comments = []
+        user.comments.push(comment.id)
         comments.push(comment)
+        
         this.saveComments(comments)
         this.saveUsers(users)
-        this.setCurrentUser(users[Number(userId) - 1])
+        
+        const currentUser = this.getCurrentUser()
+        if (currentUser && currentUser.id == user.id) {
+            this.setCurrentUser(user)
+        }
     }
 
     saveRaiting = (userId, recipeId, value) => {
         let users = this.getUsers()
-
-        for (let i = 0; i < users.length; i++) {
-
-            if (users[i].id === userId) {
-                users[i].grades[String(recipeId)] =  Number(value)
-                break
-            }
+        const user = users.find(u => u.id == userId)
+        if (user) {
+            if (!user.grades) user.grades = {}
+            user.grades[String(recipeId)] = Number(value)
+            this.saveUsers(users)
         }
-
-        this.saveUsers(users)
     }
 
     saveRaitingCurrentUser = (userId, recipeId, value) => {
         let users = this.getUsers()
-
-        for (let i = 0; i < users.length; i++) {
-
-            if (users[i].id === userId) {
-                users[i].grades[String(recipeId)] =  Number(value)
-                break
-            }
+        const userIndex = users.findIndex(u => u.id == userId)
+        if (userIndex !== -1) {
+            if (!users[userIndex].grades) users[userIndex].grades = {}
+            users[userIndex].grades[String(recipeId)] = Number(value)
+            this.saveUsers(users)
+            this.setCurrentUser(users[userIndex])
+            return this.getCurrentUser()
         }
+        return null
+    }
 
-        this.saveUsers(users)
-        this.setCurrentUser(users[userId - 1])
-        return this.getCurrentUser()
+    searchRecipes = (searchQuery) => {
+        const allRecipes = this.getRecipe()
+        if (!searchQuery || searchQuery.trim() === "") return allRecipes
+        const query = searchQuery.toLowerCase().trim()
+        return allRecipes.filter(recipe => 
+            recipe.title.toLowerCase().includes(query) ||
+            (recipe.description && recipe.description.toLowerCase().includes(query))
+        )
     }
 }

@@ -12,14 +12,13 @@
             <div class="head_content">
                 <img src="./static/media/logo.svg" alt="logo" class="logo">
                 <div class="search">
-                    <input type="text" placeholder="Поиск рецепта..">
-                    <a href="#"><img src="./static/media/lupa.svg" alt="lupa" class="lupa"></a>
+                    <input type="text" placeholder="Поиск рецепта.." id="searchInput">
+                    <a href="#" id="searchButton"><img src="./static/media/lupa.svg" alt="lupa" class="lupa"></a>
                 </div>
                 <div class="pages">
                     <a href="main.html" class="name_page">Рецепты</a>
-                    <a href="#" class="name_page">Статьи</a>
                 </div>
-                <a href="#" class="button_sign_in"><p class="sign_in">Войти</p></a>
+                <button class="sign_in">Войти</button>
             </div>
         </div>
     </header>    
@@ -44,48 +43,9 @@
                     <a href="#"><p class="name_category">Доступные ЗОЖ</p></a>
                 </div>
             </div>
-            <div class="for_cards">
-                <a href="recipe.html">
-                    <div class="card">
-                        <div class="for_puncake">
-                            <div class="for_time">
-                                <img src="./static/media/clock.svg" alt="clock" class="clock">
-                                <p class="time">30 мин</p>
-                            </div>
-                        </div>
-                        <div class="text_block">
-                            <p class="name_recipe">Панкейки</p>
-                            <p class="description_recipe">Один из самых популярных американских завтраков выглядит именно так. Пышные и чуточку пористые панкейки — это нечто среднее между оладьями и блинами.  В них добавляют масло..</p>
-                        </div>
-                    </div>
-                </a>
-                <div class="card">
-                    <div class="for_sandwich">
-                        <div class="for_time">
-                            <img src="./static/media/clock.svg" alt="clock" class="clock">
-                            <p class="time">20 мин</p>
-                        </div>
-                    </div>
-                    <div class="text_block">
-                        <p class="name_recipe">Кубинские сэндвичи</p>
-                        <p class="description_recipe">Сытные горячие сэндвичи с мясом и расплавленным сыром когда-то были популярным обедом рабочих кубинских сигарных фабрик, а со временем их полюбили и в США. Хлеб и ...</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="for_pastaB">
-                        <div class="for_time">
-                            <img src="./static/media/clock.svg" alt="clock" class="clock">
-                            <p class="time">30 мин</p>
-                        </div>
-                    </div>
-                    <div class="text_block">
-                        <p class="name_recipe">Паста с брокколи и зеленью</p>
-                        <p class="description_recipe">Хоть это вегетарианская версия пасты, она получается такой же сытной и кремовой, как и классическая. При этом блюдо полезно благодаря большому количеству овощей и ...</p>
-                    </div>
-                </div>
+            <div class="for_cards" id="recipesContainer">
             </div>
         </div>
-    <script src="./static/js/script_main.js"></script>
     </main>
     <footer>
         <div class="main_footer">
@@ -109,5 +69,6 @@
             </div>
         </div>
     </footer>
+    <script type="module" src="./static/js/script_main.js"></script>
 </body>
 </html>

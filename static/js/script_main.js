@@ -1,18 +1,137 @@
 import { Storage } from "./storage.js";
 
-const storage = new Storage()
+const storage = new Storage();
+
+// Кнопка "Войти" – переход на страницу login.html
+document.querySelector('.sign_in').addEventListener('click', function() {
+    window.location.href = 'login.html';
+});
+
+// Функция обрезания текста
+function truncateText(text, maxLength) {
+    if (!text) return 'Описание отсутствует';
+    if (text.length <= maxLength) return text;
+    let truncated = text.substring(0, maxLength);
+    let lastSpace = truncated.lastIndexOf(' ');
+    if (lastSpace > 0) {
+        truncated = truncated.substring(0, lastSpace);
+    }
+    return truncated + '...';
+}
 
 document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('recipesContainer');
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('searchButton'); // теперь это <a>
     const arrow = document.getElementById('arrow');
     const menu = document.getElementById('categoryMenu');
 
+    if (!container) {
+        console.error('Контейнер не найден');
+        return;
+    }
+
+    let allRecipes = [];
+
+    function loadAndDisplayRecipes(recipesToShow) {
+        container.innerHTML = '';
+        for (let recipe of recipesToShow) {
+            const shortDescription = truncateText(recipe.description, 190);
+            const cardHtml = `
+                <a href="recipe.html?id=${recipe.id}">
+                    <div class="card">
+                        <div class="for_recipe" style="background-image: url('${recipe.img}'); background-size: cover; background-position: center;">
+                            <div class="for_time">
+                                <img src="./static/media/clock.svg" alt="clock" class="clock">
+                                <p class="time">${recipe.cookingTime} мин</p>
+                            </div>
+                        </div>
+                        <div class="text_block">
+                            <p class="name_recipe">${recipe.title}</p>
+                            <p class="description_recipe">${shortDescription}</p>
+                        </div>
+                    </div>
+                </a>
+            `;
+            container.innerHTML += cardHtml;
+        }
+    }
+
+    // Загрузка рецептов
+    fetch('/static/data/recipe.json')
+        .then(response => {
+            if (!response.ok) throw new Error(`Ошибка загрузки: ${response.status}`);
+            return response.json();
+        })
+        .then(recipes => {
+            allRecipes = recipes;
+            console.log(`Загружено ${recipes.length} рецептов`);
+            loadAndDisplayRecipes(allRecipes);
+
+            // ===== КАТЕГОРИИ =====
+            const categoryLinks = document.querySelectorAll('.name_category');
+            categoryLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const category = link.textContent.trim();
+
+                    const filtered = allRecipes.filter(recipe => {
+                        if (recipe.categories && recipe.categories.includes(category)) return true;
+                        if (recipe.tags && recipe.tags.includes(category)) return true;
+                        return false;
+                    });
+
+                    loadAndDisplayRecipes(filtered);
+
+                    if (menu) menu.classList.add('hidden');
+                    if (arrow) arrow.classList.remove('rotated');
+                    if (searchInput) searchInput.value = '';
+                });
+            });
+
+            // ===== ПОИСК (теперь внутри then, чтобы данные точно были) =====
+            function searchRecipes() {
+                const query = searchInput.value.trim().toLowerCase();
+                if (query === '') {
+                    loadAndDisplayRecipes(allRecipes);
+                } else {
+                    const filtered = allRecipes.filter(recipe =>
+                        recipe.title.toLowerCase().includes(query)
+                    );
+                    if (filtered.length === 0) {
+                        container.innerHTML = '<div style="text-align:center;padding:60px;">😕 Рецепты не найдены</div>';
+                    } else {
+                        loadAndDisplayRecipes(filtered);
+                    }
+                }
+            }
+
+            if (searchButton) {
+                searchButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    searchRecipes();
+                });
+            }
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        searchRecipes();
+                    }
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка загрузки рецептов:', error);
+            container.innerHTML = `<div style="text-align:center;padding:60px;">Не удалось загрузить рецепты</div>`;
+        });
+
+    // ===== МЕНЮ КАТЕГОРИЙ (стрелка) =====
     if (arrow && menu) {
         arrow.addEventListener('click', function(event) {
-            event.preventDefault()
-
-            menu.classList.toggle('hidden')
-
-            arrow.classList.toggle('rotated')
-        })
+            event.preventDefault();
+            menu.classList.toggle('hidden');
+            arrow.classList.toggle('rotated');
+        });
     }
 });

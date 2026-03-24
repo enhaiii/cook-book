@@ -17,9 +17,8 @@
                 </div>
                 <div class="pages">
                     <a href="main.html" class="name_page">Рецепты</a>
-                    <a href="#" class="name_page">Статьи</a>
                 </div>
-                <a href="#" class="button_sign_in"><p class="sign_in">Войти</p></a>
+                <button class="sign_in">Войти</button>
             </div>
         </div>
     </header>    
@@ -38,62 +37,17 @@
                     </div>
                 </div>
                 <div class="description">
-                    <p class="name_recipe">Панкейки</p>
-                    <p class="description_recipe">Один из самых популярных американских завтраков выглядит именно так. Пышные и чуточку пористые панкейки — это нечто среднее между оладьями и блинами. В них добавляют масло, которое делает панкейки особенно нежными. А обжаривают их на сухой сковороде. В Америке к панкейкам подают кленовый сироп, но его вполне можно заменить цветочным мёдом или любимым джемом.</p>
+                    <p class="name_recipe" id="recipeTitle"></p>
+                    <p class="description_recipe" id="recipeDescription"></p>
                 </div>
                 <div class="for_igredients">
                     <p class="title">Ингредиенты</p>
-                    <div class="all_ingredients">
-                        <div class="parametrs">
-                            <p class="name_parametr">Пшеничная мука</p>
-                            <p class="weight_parametr">200 г</p>
-                        </div>
-                        <div class="parametrs">
-                            <p class="name_parametr">Сахар</p>
-                            <p class="weight_parametr">40 г</p>
-                        </div>
-                        <div class="parametrs">
-                            <p class="name_parametr">Куриное яйцо</p>
-                            <p class="weight_parametr">1 шт</p>
-                        </div>
-                        <div class="parametrs">
-                            <p class="name_parametr">Молоко</p>
-                            <p class="weight_parametr">200 мл = 200 г</p>
-                        </div>
-                        <div class="parametrs">
-                            <p class="name_parametr">Соль</p>
-                            <p class="weight_parametr">1 г</p>
-                        </div>
-                        <div class="parametrs">
-                            <p class="name_parametr">Оливковое масло</p>
-                            <p class="weight_parametr">50 мл = 50 г</p>
-                        </div>
-                        <div class="parametrs">
-                            <p class="name_parametr">Разрыхлитель теста</p>
-                            <p class="weight_parametr">5 г</p>
-                        </div>
+                    <div class="all_ingredients" id="ingredientsList">
                     </div>
                 </div>
                 <div class="for_steps">
                     <p class="title">Рецепт</p>
-                    <div class="step">
-                        <p class="name_step">Шаг 1.</p>
-                        <p class="description_step">Подготовьте все продукты, миксер и сковороду для блинов.</p>
-                        <img src="./static/media/first_puncake.svg" alt="recipe" class="image_step">
-                    </div>
-                    <div class="step">
-                        <p class="name_step">Шаг 2.</p>
-                        <p class="description_step">Соедините все сухие ингредиенты, добавьте яйцо и перемешайте с помощью миксера. Добавьте молоко и масло и снова перемешайте миксером.</p>
-                        <img src="./static/media/second_puncake.svg" alt="recipe" class="image_step">
-                    </div>
-                    <div class="step">
-                        <p class="name_step">Шаг 3.</p>
-                        <p class="description_step">Разогрейте сковороду и обжаривайте панкейки на среднем огне без масла.</p>
-                        <img src="./static/media/three_puncake.svg" alt="recipe" class="image_step">
-                    </div>
-                    <div class="bon_appetit">
-                        <p class="message">Приятного аппетита!</p>
-                        <img src="./static/media/Smile.svg" alt="smile">
+                    <div class="all_steps" id="stepsContainer">
                     </div>
                 </div>
             </div>
@@ -187,5 +141,6 @@
             </div>
         </div>
     </footer>
+    <script type="module" src="./static/js/recipe.js"></script>
 </body>
 </html>

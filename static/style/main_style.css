@@ -22,7 +22,7 @@ header {
 .head_content {
     display: flex;
     align-items: center;
-    width: 1150px;
+    width: 1000px;
     height: 130px;
 }
 
@@ -35,7 +35,7 @@ header {
     display: flex;
     width: 450px;
     justify-content: space-between;
-    margin-left: 77px;
+    margin-left: 70px;
 }
 
 input {
@@ -44,10 +44,15 @@ input {
     border: 2px solid #A2A2A2;
     width: 398px;
     height: 40px;
-    color: #A2A2A2;
+    color: #000000;
     font-size: 16px;
     padding-left: 12px;
     background-color: #FBFBFB;
+    margin-right: 13px;
+}
+
+input::placeholder {
+    color: #A2A2A2;
 }
 
 .lupa {
@@ -56,7 +61,7 @@ input {
 
 .pages {
     display: flex;
-    margin-left: 40px;
+    margin-left: 80px;
     width: 180px;
     justify-content: space-between;
 }
@@ -74,11 +79,8 @@ input {
     width: 125px;
     height: 40px;
     border-radius: 10px;
+    margin-left: 40px;
     background-color: #F6C37B;
-}
-
-.button_sign_in {
-    margin-left: 85px;
 }
 
 footer {
@@ -205,11 +207,13 @@ body {
     color: white;
 }
 
-.for_puncake {
+.for_recipe {
     width: 447px;
     height: 320px;
     background-image: url('../media/puncake.svg');
-    background-size: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     border-radius: 15px;
     display: flex;           
     align-items: flex-end;   
@@ -304,3 +308,6 @@ body {
     margin-right: 145px;
 }
 
+.no_recipe {
+    font-size: 30px;
+}
