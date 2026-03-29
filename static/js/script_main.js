@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         recipe.title.toLowerCase().includes(query)
                     );
                     if (filtered.length === 0) {
-                        container.innerHTML = '<div style="text-align:center;padding:60px;">😕 Рецепты не найдены</div>';
+                        container.innerHTML = '<div style="text-align:center;padding:60px;">Рецепты не найдены</div>';
                     } else {
                         loadAndDisplayRecipes(filtered);
                     }

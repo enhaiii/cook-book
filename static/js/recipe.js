@@ -1,17 +1,18 @@
+// static/js/recipe.js
 import { Storage } from "./storage.js";
 
-const storage = new Storage();
 
 document.querySelector('.sign_in').addEventListener('click', function() {
     window.location.href = 'login.html';
 });
+
+const storage = new Storage();
 
 function getRecipeIdFromUrl() {
     const params = new URLSearchParams(window.location.search);
     return params.get('id');
 }
 
-// Функция для безопасного отображения HTML
 function escapeHtml(text) {
     if (!text) return '';
     const div = document.createElement('div');
@@ -19,16 +20,56 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Загружаем рецепты и отображаем нужный
+function formatDate(date) {
+    if (!date) return '';
+    if (typeof date === 'string' && date.includes('.')) return date;
+    const d = new Date(date);
+    return `${d.getDate().toString().padStart(2, '0')}.${(d.getMonth()+1).toString().padStart(2, '0')}.${d.getFullYear()}`;
+}
+
+function displayComments(comments, recipeId) {
+    const container = document.querySelector('.all_comments');
+    if (!container) return;
+
+    const recipeComments = comments.filter(c => c.recipeId == recipeId);
+    if (recipeComments.length === 0) {
+        container.innerHTML = '<div class="no-comments">Пока нет комментариев. Будьте первым!</div>';
+        return;
+    }
+
+    let html = '';
+    recipeComments.forEach(comment => {
+        const avatarUrl = comment.userAvatar || './static/media/avatar.svg'; // исправлено
+        html += `
+            <div class="just_comment">
+                <div class="icon">
+                    <img src="${avatarUrl}" alt="avatar" class="avatar-img">
+                </div>
+                <div class="info_comment">
+                    <p class="name">${escapeHtml(comment.userName || 'Пользователь')}</p>
+                    <p class="comment">${escapeHtml(comment.comm)}</p>
+                    <p class="date">${escapeHtml(formatDate(comment.date))}</p>
+                </div>
+            </div>
+        `;
+    });
+    container.innerHTML = html;
+}
+
+function updateAverageRatingUI(rating) {
+    const avgElem = document.querySelector('.avg_reviews');
+    const countElem = document.querySelector('.count_comm');
+    if (avgElem) avgElem.textContent = rating.average.toFixed(1);
+    if (countElem) countElem.textContent = `(${rating.count})`;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const recipeId = getRecipeIdFromUrl();
     if (!recipeId) {
-        console.error('ID рецепта не указан');
         document.body.innerHTML = '<h1>Ошибка: рецепт не найден</h1>';
         return;
     }
 
-    // Загружаем JSON
     fetch('/static/data/recipe.json')
         .then(response => {
             if (!response.ok) throw new Error(`Ошибка загрузки: ${response.status}`);
@@ -36,13 +77,15 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(recipes => {
             const recipe = recipes.find(r => r.id == recipeId);
-            if (!recipe) {
-                throw new Error('Рецепт не найден');
-            }
+            if (!recipe) throw new Error('Рецепт не найден');
 
-            // Заполняем заголовок, время, описание
+            // Заполняем данные рецепта
             document.getElementById('recipeTitle').textContent = recipe.title;
             document.getElementById('recipeDescription').textContent = recipe.description;
+
+            // Главное изображение
+            const titleImage = document.querySelector('.title_image');
+            if (titleImage && recipe.img) titleImage.src = recipe.img;
 
             // Ингредиенты
             const ingredientsContainer = document.getElementById('ingredientsList');
@@ -59,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
-            // Шаги приготовления
+            // Шаги
             const stepsContainer = document.getElementById('stepsContainer');
             if (stepsContainer && recipe.steps) {
                 stepsContainer.innerHTML = '';
@@ -73,27 +116,110 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                     stepsContainer.appendChild(stepDiv);
                 });
-
-                // Добавляем блок "Приятного аппетита", если его нет в JSON
-                const bonAppetit = document.createElement('div');
-                bonAppetit.className = 'bon_appetit';
-                bonAppetit.innerHTML = `
-                    <p class="message">Приятного аппетита!</p>
-                    <img src="./static/media/Smile.svg" alt="smile">
-                `;
-                stepsContainer.appendChild(bonAppetit);
             }
 
-            // Опционально: установка главного изображения
-            const mainImage = document.querySelector('.title_image');
-            if (mainImage && recipe.img) {
-                mainImage.src = recipe.img;
-                mainImage.alt = recipe.title;
+            // Избранное
+            const favImg = document.querySelector('.button_favorite');
+            const currentUser = storage.getCurrentUser();
+            if (favImg) {
+                const updateFavButton = () => {
+                    const user = storage.getCurrentUser();
+                    const isFav = user && user.favorites && user.favorites.includes(Number(recipeId));
+                    favImg.src = isFav ? './static/media/click_favorite.svg' : './static/media/favorite.svg';
+                };
+                updateFavButton();
+                favImg.parentElement.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (!storage.getCurrentUser()) {
+                        alert('Пожалуйста, войдите в аккаунт');
+                        return;
+                    }
+                    storage.toggleFavorite(currentUser.id, recipeId);
+                    updateFavButton();
+                });
             }
 
+            // Звёзды для нового отзыва
+            const ratingStars = document.querySelectorAll('.greyStar');
+            let selectedRating = 0;
+            if (ratingStars.length) {
+                const updateRatingStarsUI = (rating) => {
+                    ratingStars.forEach((star, idx) => {
+                        star.src = idx < rating
+                            ? './static/media/goldenStar.svg'
+                            : './static/media/no_comment.svg';
+                    });
+                };
+                ratingStars.forEach((star, idx) => {
+                    star.style.cursor = 'pointer';
+                    star.addEventListener('click', () => {
+                        selectedRating = idx + 1;
+                        updateRatingStarsUI(selectedRating);
+                    });
+                });
+            }
+
+            // Комментарии
+            let comments = storage.getComments();
+            displayComments(comments, recipeId);
+
+            if (recipe.rating) {
+                updateAverageRatingUI(recipe.rating);
+            }
+
+            // Отправка нового комментария
+            const sendButton = document.querySelector('.send');
+            const commentInput = document.querySelector('.input_comment');
+
+            if (sendButton && commentInput) {
+                sendButton.addEventListener('click', () => {
+                    const currentUser = storage.getCurrentUser();
+                    if (!currentUser) {
+                        alert('Пожалуйста, войдите в аккаунт, чтобы оставить комментарий');
+                        return;
+                    }
+
+                    const commentText = commentInput.value.trim();
+                    if (!commentText) {
+                        alert('Введите текст комментария');
+                        return;
+                    }
+
+                    const newComment = {
+                        id: comments.length + 1,
+                        recipeId: Number(recipeId),
+                        userId: currentUser.id,
+                        userName: currentUser.name,
+                        userAvatar: currentUser.avatar || './static/media/avatar.svg',
+                        comm: commentText,
+                        rating: selectedRating > 0 ? selectedRating : null,
+                        date: new Date().toLocaleDateString('ru-RU')
+                    };
+
+                    const allComments = storage.getComments();
+                    allComments.push(newComment);
+                    storage.saveComments(allComments);
+
+                    if (selectedRating > 0) {
+                        storage.updateRecipeAverageRating(recipeId);
+                        const updatedRecipes = storage.getRecipe();
+                        const updatedRecipe = updatedRecipes.find(r => r.id == recipeId);
+                        if (updatedRecipe && updatedRecipe.rating) {
+                            updateAverageRatingUI(updatedRecipe.rating);
+                        }
+                    }
+
+                    displayComments(allComments, recipeId);
+                    commentInput.value = '';
+                    selectedRating = 0;
+                    if (ratingStars.length) {
+                        ratingStars.forEach(star => star.src = './static/media/no_comment.svg');
+                    }
+                });
+            }
         })
         .catch(error => {
-            console.error('❌ Ошибка загрузки рецепта:', error);
+            console.error('Ошибка загрузки рецепта:', error);
             document.body.innerHTML = '<h1 style="text-align:center;margin-top:100px;">😕 Рецепт не найден</h1>';
         });
 });

@@ -53,10 +53,14 @@ input {
     border: 2px solid #A2A2A2;
     width: 398px;
     height: 40px;
-    color: #A2A2A2;
+    color: #000000;
     font-size: 16px;
     padding-left: 12px;
     background-color: #FBFBFB;
+}
+
+input::placeholder {
+    color: #A2A2A2;
 }
 
 .lupa {
@@ -152,5 +156,90 @@ footer {
 
 .prava {
     font-size: 20px;
+    color: #333333;
+}
+
+.content {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 220px;
+    width: 1280px;
+    margin-bottom: 100px;
+}
+
+.card {
+    background-color: white;
+    width: 500px;
+    height: 475px;
+    padding: 28px 26px 11px 26px;
+    border-radius: 15px;
+    margin-bottom: 70px;
+}
+
+.clock {
+    width: 20px;
+    margin-right: 10px;
+}
+
+.time {
+    font-size: 14px;
+    color: white;
+}
+
+.for_puncake {
+    width: 447px;
+    height: 320px;
+    background-image: url('../media/puncake.svg');
+    background-size: 100%;
+    border-radius: 15px;
+    display: flex;           
+    align-items: flex-end;   
+    justify-content: flex-end; 
+    padding: 0px 20px 10px 10px;  
+}
+
+.for_sandwich {
+    width: 447px;
+    height: 320px;
+    background-image: url('../media/sandwich.svg');
+    background-size: 100%;
+    border-radius: 15px;
+    display: flex;           
+    align-items: flex-end;   
+    justify-content: flex-end; 
+    padding: 0px 20px 10px 10px;  
+}
+
+.for_time {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 25px;
+    background-color: rgba(16, 16, 16, 0.63);
+    border-radius: 20px;
+    margin: 0;
+}
+
+.name_recipe {
+    font-size: 26px;
+    font-weight: 600;
+    margin: 15px 0 6px 0;
+    color: #000000;
+}
+
+.for_cards {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    flex: 1;
+}
+
+.description_recipe {
+    width: 447px;
+    font-size: 14px;
+    text-align: justify;
+    line-height: 20px;
     color: #333333;
 }

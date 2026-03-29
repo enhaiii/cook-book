@@ -26,15 +26,18 @@
         <div class="content">
             <div class="list">
                 <img src="./static/media/puncake.svg" alt="image recipe" class="title_image">
-                <div class="activity">
-                    <div class="for_likes">
-                        <img src="./static/media/Heart 1.svg" alt="heart" class="heart">
-                        <p class="text_likes">9.5K</p>
+                <div class="for_all_activity">
+                    <div class="activity">
+                        <div class="for_likes">
+                            <img src="./static/media/Heart 1.svg" alt="heart" class="heart">
+                            <p class="text_likes">9.5K</p>
+                        </div>
+                        <div class="for_comment">
+                            <img src="./static/media/Star.svg" alt="star" class="star">
+                            <p class="count_comment">4.5<span>(115)</span></p>
+                        </div>
                     </div>
-                    <div class="for_comment">
-                        <img src="./static/media/Star.svg" alt="star" class="star">
-                        <p class="count_comment">4.5<span>(115)</span></p>
-                    </div>
+                    <button><img src="./static/media/favorite.svg" alt="favorite" class="button_favorite"></button>
                 </div>
                 <div class="description">
                     <p class="name_recipe" id="recipeTitle"></p>
@@ -61,58 +64,18 @@
                     <p class="avg_reviews">4.5</p>
                 </div>
                 <div class="all_comments">
-                    <div class="just_comment">
-                        <div class="icon"></div>
-                        <div class="info_comment">
-                            <p class="name">Мария</p>
-                            <p class="comment">Очень вкусно получилось. Рекомендую.</p>
-                            <p class="date">20.02.2025</p>
-                        </div>
-                    </div>
-                    <div class="just_comment">
-                        <div class="icon"></div>
-                        <div class="info_comment">
-                            <p class="name">Лера</p>
-                            <p class="comment">Оливковое я заменила подсолнечным, я хотела приготовить панкейки а не мини блины.</p>
-                            <p class="date">10.03.2025</p>
-                        </div>
-                    </div>
-                    <div class="just_comment">
-                        <div class="icon"></div>
-                        <div class="info_comment">
-                            <p class="name">Марк</p>
-                            <p class="comment">Очень вкусные!!!</p>
-                            <p class="date">18.10.2025</p>
-                        </div>
-                    </div>
-                    <div class="just_comment">
-                        <div class="icon"></div>
-                        <div class="info_comment">
-                            <p class="name">Мария</p>
-                            <p class="comment">Очень вкусно получилось. Рекомендую.</p>
-                            <p class="date">20.02.2025</p>
-                        </div>
-                    </div>
-                    <div class="just_comment">
-                        <div class="icon"></div>
-                        <div class="info_comment">
-                            <p class="name">Лера</p>
-                            <p class="comment">Оливковое я заменила подсолнечным, я хотела приготовить панкейки а не мини блины.</p>
-                            <p class="date">10.03.2025</p>
-                        </div>
-                    </div>
-                    <div class="just_comment">
-                        <div class="icon"></div>
-                        <div class="info_comment">
-                            <p class="name">Марк</p>
-                            <p class="comment">Очень вкусные!!!</p>
-                            <p class="date">18.10.2025</p>
-                        </div>
-                    </div>
-                    <button class="get_all">Еще комментарии</button>
                 </div>
                 <div class="for_you_comment">
-                    <p class="title_comment">Напишите ваш отзыв</p>
+                    <div class="for_stars">
+                        <p class="title_comment">Напишите ваш отзыв</p>
+                        <div class="all_stars">
+                            <img src="./static/media/no_comment.svg" alt="grey star" class="greyStar" data-value="1">
+                            <img src="./static/media/no_comment.svg" alt="grey star" class="greyStar" data-value="2">
+                            <img src="./static/media/no_comment.svg" alt="grey star" class="greyStar" data-value="3">
+                            <img src="./static/media/no_comment.svg" alt="grey star" class="greyStar" data-value="4">
+                            <img src="./static/media/no_comment.svg" alt="grey star" class="greyStar" data-value="5">
+                        </div>
+                    </div>
                     <input type="text" placeholder="Ввести комментарий..." class="input_comment">
                     <button class="send">Отправить</button>
                 </div>
@@ -126,17 +89,15 @@
                     <img src="./static/media/logo.svg" alt="logo" class="logo_footer">
                     <div class="column">
                         <p class="text_page">Рецепты</p>
-                        <p class="text_page">Статьи</p>
                         <p class="text_page">Профиль</p>
                     </div>
                     <div class="column">
                         <p class="text_page">Любимое</p>
                         <p class="text_page">Мои рецепты</p>
-                        <p class="text_page">Мои комментарии</p>
                     </div>
                 </div>
                 <div class="bottom">
-                    <p class="prava">© 2025 Харченко К.А.</p>
+                    <p class="prava">© 2026 Харченко К.А.</p>
                 </div>
             </div>
         </div>

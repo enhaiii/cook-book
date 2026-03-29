@@ -53,10 +53,14 @@ input {
     border: 2px solid #A2A2A2;
     width: 398px;
     height: 40px;
-    color: #A2A2A2;
+    color: #000000;
     font-size: 16px;
     padding-left: 12px;
     background-color: #FBFBFB;
+}
+
+input::placeholder {
+    color: #A2A2A2;
 }
 
 .lupa {
@@ -153,4 +157,91 @@ footer {
 .prava {
     font-size: 20px;
     color: #333333;
+}
+
+.content {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 220px;
+    width: 1280px;
+    margin-bottom: 100px;
+}
+
+.list {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    background-color: white;
+    width: 800px;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 4px 6px 4px 0px rgba(0, 0, 0, 0.1);
+    padding: 44px 59px 44px 59px;
+}
+
+h1 {
+    font-size: 30px;
+    font-weight: 500;
+    margin-bottom: 30px;
+}
+
+.avatar {
+    width: 150px;
+    margin-bottom: 10px;
+    border-radius: 50%;
+}
+
+#name {
+    font-size: 24px;
+    font-weight: 500;
+    margin-top: 20px;
+}
+
+h3 {
+    font-size: 20px;
+    margin: 20px 0px 10px 5px;
+}
+
+.radio {
+    width: 20px;
+    border-color: #000000;
+}
+
+.gender {
+    display: flex;
+    align-items: center;
+    width: 53px;
+}
+
+.name_gender {
+    font-size: 18px;
+    margin-left: 3px;
+}
+
+.all_radio {
+    display: flex;
+    align-items: center;
+}
+
+.logout {
+    background-color: #F6C37B;
+    width: 90px;
+    height: 31px;
+    border-radius: 5px;
+    color: white;
+    font-size: 20px;
+}
+
+.grayButton {
+    background-color: #666666;
+    width: 80px;
+    height: 24px;
+    border-radius: 5px;
+    color: white;
+    font-size: 14px;
+}
+
+.grayButton:hover {
+    background-color: #bbb;
 }

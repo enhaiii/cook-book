@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Главная</title>
-    <link rel="stylesheet" href="./static/style/main_style.css">
+    <link rel="stylesheet" href="../static/style/favorite.css">
 </head>
 <body>
     <header>
@@ -17,33 +17,29 @@
                 </div>
                 <div class="pages">
                     <a href="main.html" class="name_page">Рецепты</a>
+                    <a href="favorite.html"><img src="./static/media/favorite.svg" alt="favorite" class="favorite"></a>
+                    <a href="profile.html"><img src="./static/media/profile.svg" alt="profile" class="profile"></a>
                 </div>
-                <button class="sign_in">Войти</button>
             </div>
         </div>
-    </header>    
+    </header>        
     <main>
         <div class="content">
-            <div class="for_all_category">
-                <div class="for_category">
-                    <p class="category">Категории</p>
-                    <a href="#"><img src="./static/media/arrow.svg" alt="arrow" class="arrow_category" id="arrow"></a>
-                </div>
-                <div class="all_category hidden" id="categoryMenu">
-                    <a href="#"><p class="name_category">Завтраки</p></a>
-                    <a href="#"><p class="name_category">Обеды</p></a>
-                    <a href="#"><p class="name_category">Ужины</p></a>
-                    <a href="#"><p class="name_category">Десерты</p></a>
-                    <a href="#"><p class="name_category">Закуски</p></a>
-                    <a href="#"><p class="name_category">Салаты</p></a>
-                    <a href="#"><p class="name_category">Гарниры</p></a>
-                    <a href="#"><p class="name_category">Выпечка</p></a>
-                    <a href="#"><p class="name_category">Напитки</p></a>
-                    <a href="#"><p class="name_category">Соусы и маринады</p></a>
-                    <a href="#"><p class="name_category">Доступные ЗОЖ</p></a>
-                </div>
-            </div>
-            <div class="for_cards" id="recipesContainer">
+            <div class="for_cards">
+                <a href="recipe.html">
+                    <div class="card">
+                        <div class="for_puncake">
+                            <div class="for_time">
+                                <img src="../static/media/clock.svg" alt="clock" class="clock">
+                                <p class="time">30 мин</p>
+                            </div>
+                        </div>
+                        <div class="text_block">
+                            <p class="name_recipe">Панкейки</p>
+                            <p class="description_recipe">Один из самых популярных американских завтраков выглядит именно так. Пышные и чуточку пористые панкейки — это нечто среднее между оладьями и блинами.  В них добавляют масло..</p>
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
     </main>
@@ -67,6 +63,5 @@
             </div>
         </div>
     </footer>
-    <script type="module" src="./static/js/script_main.js"></script>
 </body>
 </html>

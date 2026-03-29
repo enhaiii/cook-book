@@ -32,6 +32,24 @@ export class Storage {
     setCurrentUser = (currentUser) => {
         localStorage.setItem("currentUser", JSON.stringify(currentUser))
     }
+    
+    updateUser = (userId, updates) => {
+        let users = this.getUsers();
+        const index = users.findIndex(u => u.id == userId);
+        if (index !== -1) {
+            // Объединяем старые данные с новыми (новые перезаписывают старые)
+            users[index] = { ...users[index], ...updates };
+            this.saveUsers(users);
+            
+            // Обновляем текущего пользователя, если это он
+            const current = this.getCurrentUser();
+            if (current && current.id == userId) {
+                this.setCurrentUser(users[index]);
+            }
+            return users[index];
+        }
+        return null;
+    };
 
     logout = () => {
         localStorage.removeItem("currentUser")
@@ -66,41 +84,70 @@ export class Storage {
         localStorage.setItem("Comments", JSON.stringify(comments))
     }
 
+    updateRecipeAverageRating = (recipeId) => {
+        const recipes = this.getRecipe();
+        const recipeIndex = recipes.findIndex(r => r.id == recipeId);
+        if (recipeIndex === -1) return;
+
+        const comments = this.getComments();
+        const recipeComments = comments.filter(c => c.recipeId == recipeId && c.rating);
+        if (recipeComments.length === 0) {
+            recipes[recipeIndex].rating = { average: 0, count: 0 };
+        } else {
+            const sum = recipeComments.reduce((acc, c) => acc + c.rating, 0);
+            const average = sum / recipeComments.length;
+            recipes[recipeIndex].rating = {
+                average: Number(average.toFixed(1)),
+                count: recipeComments.length
+            };
+        }
+        this.saveRecipe(recipes);
+    };
+
+// Обновлённый getComments с обогащением
     getComments = () => {
-        const comments = localStorage.getItem("Comments")
-        return comments ? JSON.parse(comments) : defaultComments
-    }
-
-    saveComment = (userId, recipeId, comm, date) => {
-        let comments = this.getComments()
-        let users = this.getUsers()
+        let comments = localStorage.getItem("Comments");
+        let users = this.getUsers();
+        let parsedComments = comments ? JSON.parse(comments) : defaultComments;
         
-        const user = users.find(u => u.id == userId)
-        if (!user) {
-            console.error('Пользователь не найден')
-            return
-        }
+        parsedComments = parsedComments.map(comment => {
+            if (!comment.userName || !comment.userAvatar) {
+                const user = users.find(u => u.id == comment.userId);
+                if (user) {
+                    comment.userName = user.name;
+                    comment.userAvatar = user.avatar || './static/media/avatar.svg';
+                    console.log(`✅ Обогащён комментарий ${comment.id}: аватарка = ${comment.userAvatar}`);
+                } else {
+                    console.warn(`❌ Пользователь не найден для комментария ${comment.id}, userId = ${comment.userId}`);
+                    comment.userAvatar = './static/media/avatar.svg';
+                }
+            } else {
+                console.log(`Комментарий ${comment.id} уже имеет аватарку: ${comment.userAvatar}`);
+            }
+            return comment;
+        });
+        return parsedComments;
+    };
 
-        let comment = {
-            "id": comments.length + 1,
-            "recipeId": recipeId,
-            "userId": userId,
-            "comm": comm,
-            "date": date || new Date().toLocaleDateString()
-        }
+    saveComment = (userId, recipeId, comm, date, rating = null) => {
+        let comments = this.getComments();
+        let users = this.getUsers();
+        const user = users.find(u => u.id == userId);
+        if (!user) return;
 
-        if (!user.comments) user.comments = []
-        user.comments.push(comment.id)
-        comments.push(comment)
-        
-        this.saveComments(comments)
-        this.saveUsers(users)
-        
-        const currentUser = this.getCurrentUser()
-        if (currentUser && currentUser.id == user.id) {
-            this.setCurrentUser(user)
-        }
-    }
+        const newComment = {
+            id: comments.length + 1,
+            recipeId: recipeId,
+            userId: userId,
+            userName: user.name,
+            userAvatar: user.avatar || './static/media/avatar.svg', // обязательно
+            comm: comm,
+            rating: rating,
+            date: date || new Date().toLocaleDateString('ru-RU')
+        };
+        comments.push(newComment);
+        this.saveComments(comments);
+    };
 
     saveRaiting = (userId, recipeId, value) => {
         let users = this.getUsers()
@@ -134,4 +181,31 @@ export class Storage {
             (recipe.description && recipe.description.toLowerCase().includes(query))
         )
     }
+    // storage.js — добавьте этот метод в класс Storage
+
+    toggleFavorite = (userId, recipeId) => {
+        const users = this.getUsers();
+        const userIndex = users.findIndex(u => u.id == userId);
+        if (userIndex === -1) return null;
+
+        const favorites = users[userIndex].favorites || [];
+        const index = favorites.indexOf(Number(recipeId));
+
+        if (index === -1) {
+            favorites.push(Number(recipeId));
+        } else {
+            favorites.splice(index, 1);
+        }
+
+        users[userIndex].favorites = favorites;
+        this.saveUsers(users);
+
+        // Обновляем текущего пользователя, если это он
+        const current = this.getCurrentUser();
+        if (current && current.id == userId) {
+            this.setCurrentUser(users[userIndex]);
+        }
+
+        return users[userIndex];
+    };
 }
