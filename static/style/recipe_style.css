@@ -32,20 +32,20 @@ header {
 .head_content {
     display: flex;
     align-items: center;
-    width: 1000px;
+    width: 1150px;
     height: 130px;
 }
 
 .logo {
     width: 82.5px;
-    margin-left: 40px;
+    margin-left: 70px;
 }
 
 .search {
     display: flex;
     width: 450px;
     justify-content: space-between;
-    margin-left: 70px;
+    margin-left: 85px;
 }
 
 input {
@@ -57,8 +57,8 @@ input {
     color: #000000;
     font-size: 16px;
     padding-left: 12px;
+    margin-right: 10px;
     background-color: #FBFBFB;
-    margin-right: 13px;
 }
 
 input::placeholder {
@@ -71,13 +71,22 @@ input::placeholder {
 
 .pages {
     display: flex;
-    margin-left: 80px;
-    width: 180px;
+    margin-left: 60px;
+    width: 200px;
     justify-content: space-between;
+    align-items: center;
 }
 
 .name_page {
     font-size: 20px;
+}
+
+.favorite {
+    height: 40px;
+}
+
+.profile {
+    height: 40px;
 }
 
 .sign_in {
@@ -86,11 +95,14 @@ input::placeholder {
     justify-content: center;
     color: white;
     font-size: 20px;
-    width: 125px;
+    width: 100px;
     height: 40px;
     border-radius: 10px;
-    margin-left: 40px;
     background-color: #F6C37B;
+}
+
+.button_sign_in {
+    margin-left: 85px;
 }
 
 footer {
@@ -171,52 +183,13 @@ footer {
     width: 660px;
 }
 
-.activity {
-    display: flex;
-    width: 192px;
-    justify-content: space-between;
-}
-
-.for_likes {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 80px;
-    height: 28px;
-    background-color: rgba(16, 16, 16, 0.34);
-    border-radius: 20px;
-    margin: 0;
-    padding: 10px;
-}
-
-.heart {
-    height: 16px;
-}
-
 .text_likes {
     font-size: 16px;
     color: white;
 }
 
-.for_comment {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 102px;
-    height: 28px;
-    background-color: rgba(16, 16, 16, 0.34);
-    border-radius: 20px;
-    margin: 0;
-    padding: 10px;
-}
-
 .star {
     height: 18px;
-}
-
-.count_comment {
-    color: white;
-    font-size: 16px;
 }
 
 span {
@@ -254,6 +227,14 @@ span {
 .title {
     font-size: 32px;
     font-weight: 500;
+}
+
+.favorite {
+    height: 40px;
+}
+
+.profile {
+    height: 40px;
 }
 
 .all_ingredients {

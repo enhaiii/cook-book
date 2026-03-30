@@ -81,8 +81,17 @@ export class Storage {
     }
 
     saveComments = (comments) => {
-        localStorage.setItem("Comments", JSON.stringify(comments))
-    }
+        try {
+            localStorage.setItem("Comments", JSON.stringify(comments));
+        } catch (e) {
+            if (e.name === 'QuotaExceededError') {
+                alert('Слишком много комментариев, часть будет удалена');
+                // Удаляем половину старых комментариев
+                comments.splice(0, Math.floor(comments.length / 2));
+                localStorage.setItem("Comments", JSON.stringify(comments));
+            } else throw e;
+        }
+    };
 
     updateRecipeAverageRating = (recipeId) => {
         const recipes = this.getRecipe();
@@ -107,25 +116,34 @@ export class Storage {
 // Обновлённый getComments с обогащением
     getComments = () => {
         let comments = localStorage.getItem("Comments");
-        let users = this.getUsers();
-        let parsedComments = comments ? JSON.parse(comments) : defaultComments;
+        let parsedComments;
         
+        try {
+            parsedComments = comments ? JSON.parse(comments) : defaultComments;
+        } catch (e) {
+            console.error('Ошибка парсинга Comments, загружаем defaultComments', e);
+            // Удаляем повреждённые данные
+            localStorage.removeItem("Comments");
+            parsedComments = defaultComments;
+            this.saveComments(defaultComments);
+        }
+        
+        let users = this.getUsers();
+        // Обогащаем комментарии...
         parsedComments = parsedComments.map(comment => {
             if (!comment.userName || !comment.userAvatar) {
                 const user = users.find(u => u.id == comment.userId);
                 if (user) {
                     comment.userName = user.name;
-                    comment.userAvatar = user.avatar || './static/media/avatar.svg';
-                    console.log(`✅ Обогащён комментарий ${comment.id}: аватарка = ${comment.userAvatar}`);
+                    comment.userAvatar = user.avatar || './static/media/default-avatar.svg';
                 } else {
-                    console.warn(`❌ Пользователь не найден для комментария ${comment.id}, userId = ${comment.userId}`);
-                    comment.userAvatar = './static/media/avatar.svg';
+                    comment.userName = 'Пользователь';
+                    comment.userAvatar = './static/media/default-avatar.svg';
                 }
-            } else {
-                console.log(`Комментарий ${comment.id} уже имеет аватарку: ${comment.userAvatar}`);
             }
             return comment;
         });
+        
         return parsedComments;
     };
 

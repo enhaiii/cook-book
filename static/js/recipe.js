@@ -1,10 +1,4 @@
-// static/js/recipe.js
 import { Storage } from "./storage.js";
-
-
-document.querySelector('.sign_in').addEventListener('click', function() {
-    window.location.href = 'login.html';
-});
 
 const storage = new Storage();
 
@@ -27,6 +21,7 @@ function formatDate(date) {
     return `${d.getDate().toString().padStart(2, '0')}.${(d.getMonth()+1).toString().padStart(2, '0')}.${d.getFullYear()}`;
 }
 
+// Отображение комментариев
 function displayComments(comments, recipeId) {
     const container = document.querySelector('.all_comments');
     if (!container) return;
@@ -39,7 +34,7 @@ function displayComments(comments, recipeId) {
 
     let html = '';
     recipeComments.forEach(comment => {
-        const avatarUrl = comment.userAvatar || './static/media/avatar.svg'; // исправлено
+        const avatarUrl = comment.userAvatar || './static/media/default-avatar.svg';
         html += `
             <div class="just_comment">
                 <div class="icon">
@@ -56,11 +51,18 @@ function displayComments(comments, recipeId) {
     container.innerHTML = html;
 }
 
+// Обновление среднего рейтинга (звёзды)
 function updateAverageRatingUI(rating) {
     const avgElem = document.querySelector('.avg_reviews');
-    const countElem = document.querySelector('.count_comm');
     if (avgElem) avgElem.textContent = rating.average.toFixed(1);
-    if (countElem) countElem.textContent = `(${rating.count})`;
+}
+
+// Обновление общего количества комментариев (все комментарии, включая старые)
+function updateCommentCount(comments, recipeId) {
+    const countElem = document.querySelector('.count_comm');
+    if (!countElem) return;
+    const count = comments.filter(c => c.recipeId == recipeId).length;
+    countElem.textContent = `(${count})`;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -118,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
-            // Избранное
+            // ===== ИЗБРАННОЕ =====
             const favImg = document.querySelector('.button_favorite');
             const currentUser = storage.getCurrentUser();
             if (favImg) {
@@ -139,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
-            // Звёзды для нового отзыва
+            // ===== ЗВЁЗДЫ ДЛЯ НОВОГО ОТЗЫВА =====
             const ratingStars = document.querySelectorAll('.greyStar');
             let selectedRating = 0;
             if (ratingStars.length) {
@@ -159,15 +161,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
-            // Комментарии
+            // ===== КОММЕНТАРИИ =====
             let comments = storage.getComments();
             displayComments(comments, recipeId);
+            updateCommentCount(comments, recipeId);          // общее количество
 
-            if (recipe.rating) {
-                updateAverageRatingUI(recipe.rating);
+            // Пересчитываем средний рейтинг (на основе комментариев с оценками)
+            storage.updateRecipeAverageRating(recipeId);
+
+            // Получаем обновлённый рецепт с актуальным rating
+            const updatedRecipes = storage.getRecipe();
+            const updatedRecipe = updatedRecipes.find(r => r.id == recipeId);
+            if (updatedRecipe && updatedRecipe.rating) {
+                updateAverageRatingUI(updatedRecipe.rating);
+            } else {
+                updateAverageRatingUI({ average: 0, count: 0 });
             }
 
-            // Отправка нового комментария
+            // ===== ОТПРАВКА НОВОГО КОММЕНТАРИЯ =====
             const sendButton = document.querySelector('.send');
             const commentInput = document.querySelector('.input_comment');
 
@@ -190,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         recipeId: Number(recipeId),
                         userId: currentUser.id,
                         userName: currentUser.name,
-                        userAvatar: currentUser.avatar || './static/media/avatar.svg',
+                        userAvatar: currentUser.avatar || './static/media/default-avatar.svg',
                         comm: commentText,
                         rating: selectedRating > 0 ? selectedRating : null,
                         date: new Date().toLocaleDateString('ru-RU')
@@ -200,16 +211,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     allComments.push(newComment);
                     storage.saveComments(allComments);
 
-                    if (selectedRating > 0) {
-                        storage.updateRecipeAverageRating(recipeId);
-                        const updatedRecipes = storage.getRecipe();
-                        const updatedRecipe = updatedRecipes.find(r => r.id == recipeId);
-                        if (updatedRecipe && updatedRecipe.rating) {
-                            updateAverageRatingUI(updatedRecipe.rating);
-                        }
+                    // Обновляем отображение комментариев
+                    displayComments(allComments, recipeId);
+                    updateCommentCount(allComments, recipeId);   // общее количество
+
+                    // Пересчитываем и обновляем средний рейтинг
+                    storage.updateRecipeAverageRating(recipeId);
+                    const latestRecipes = storage.getRecipe();
+                    const latestRecipe = latestRecipes.find(r => r.id == recipeId);
+                    if (latestRecipe && latestRecipe.rating) {
+                        updateAverageRatingUI(latestRecipe.rating);
                     }
 
-                    displayComments(allComments, recipeId);
+                    // Очищаем форму
                     commentInput.value = '';
                     selectedRating = 0;
                     if (ratingStars.length) {

@@ -2,12 +2,6 @@ import { Storage } from "./storage.js";
 
 const storage = new Storage();
 
-// Кнопка "Войти" – переход на страницу login.html
-document.querySelector('.sign_in').addEventListener('click', function() {
-    window.location.href = 'login.html';
-});
-
-// Функция обрезания текста
 function truncateText(text, maxLength) {
     if (!text) return 'Описание отсутствует';
     if (text.length <= maxLength) return text;
@@ -20,11 +14,15 @@ function truncateText(text, maxLength) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOMContentLoaded – инициализация страницы');
     const container = document.getElementById('recipesContainer');
     const searchInput = document.getElementById('searchInput');
-    const searchButton = document.getElementById('searchButton'); // теперь это <a>
+    const searchButton = document.getElementById('searchButton');
     const arrow = document.getElementById('arrow');
     const menu = document.getElementById('categoryMenu');
+
+    console.log('searchInput:', searchInput);
+    console.log('searchButton:', searchButton);
 
     if (!container) {
         console.error('Контейнер не найден');
@@ -57,7 +55,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Загрузка рецептов
     fetch('/static/data/recipe.json')
         .then(response => {
             if (!response.ok) throw new Error(`Ошибка загрузки: ${response.status}`);
@@ -74,32 +71,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     const category = link.textContent.trim();
-
+                    console.log('Выбрана категория:', category);
                     const filtered = allRecipes.filter(recipe => {
                         if (recipe.categories && recipe.categories.includes(category)) return true;
                         if (recipe.tags && recipe.tags.includes(category)) return true;
                         return false;
                     });
-
                     loadAndDisplayRecipes(filtered);
-
                     if (menu) menu.classList.add('hidden');
                     if (arrow) arrow.classList.remove('rotated');
                     if (searchInput) searchInput.value = '';
                 });
             });
 
-            // ===== ПОИСК (теперь внутри then, чтобы данные точно были) =====
+            // ===== ПОИСК =====
             function searchRecipes() {
                 const query = searchInput.value.trim().toLowerCase();
+                console.log('Поиск по запросу:', query);
                 if (query === '') {
                     loadAndDisplayRecipes(allRecipes);
                 } else {
                     const filtered = allRecipes.filter(recipe =>
                         recipe.title.toLowerCase().includes(query)
                     );
+                    console.log('Найдено рецептов:', filtered.length);
                     if (filtered.length === 0) {
-                        container.innerHTML = '<div style="text-align:center;padding:60px;">Рецепты не найдены</div>';
+                        container.innerHTML = '<div style="text-align:center;padding:60px;">😕 Рецепты не найдены</div>';
                     } else {
                         loadAndDisplayRecipes(filtered);
                     }
@@ -107,18 +104,27 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             if (searchButton) {
+                console.log('Добавляем обработчик на кнопку поиска');
                 searchButton.addEventListener('click', function(e) {
                     e.preventDefault();
+                    console.log('Клик по кнопке поиска');
                     searchRecipes();
                 });
+            } else {
+                console.warn('Кнопка поиска не найдена!');
             }
+
             if (searchInput) {
+                console.log('Добавляем обработчик на input Enter');
                 searchInput.addEventListener('keypress', function(e) {
                     if (e.key === 'Enter') {
                         e.preventDefault();
+                        console.log('Нажата Enter в поле поиска');
                         searchRecipes();
                     }
                 });
+            } else {
+                console.warn('Поле ввода поиска не найдено!');
             }
         })
         .catch(error => {
@@ -126,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
             container.innerHTML = `<div style="text-align:center;padding:60px;">Не удалось загрузить рецепты</div>`;
         });
 
-    // ===== МЕНЮ КАТЕГОРИЙ (стрелка) =====
+    // ===== МЕНЮ КАТЕГОРИЙ =====
     if (arrow && menu) {
         arrow.addEventListener('click', function(event) {
             event.preventDefault();

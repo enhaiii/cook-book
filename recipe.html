@@ -12,13 +12,13 @@
             <div class="head_content">
                 <img src="./static/media/logo.svg" alt="logo" class="logo">
                 <div class="search">
-                    <input type="text" placeholder="Поиск рецепта..">
-                    <a href="#"><img src="./static/media/lupa.svg" alt="lupa" class="lupa"></a>
+                    <input type="text" placeholder="Поиск рецепта.." id="searchInput">
+                    <a href="#" id="searchButton"><img src="./static/media/lupa.svg" alt="lupa" class="lupa"></a>
                 </div>
                 <div class="pages">
                     <a href="main.html" class="name_page">Рецепты</a>
+                    <button class="sign_in">Войти</button>
                 </div>
-                <button class="sign_in">Войти</button>
             </div>
         </div>
     </header>    
@@ -27,16 +27,6 @@
             <div class="list">
                 <img src="./static/media/puncake.svg" alt="image recipe" class="title_image">
                 <div class="for_all_activity">
-                    <div class="activity">
-                        <div class="for_likes">
-                            <img src="./static/media/Heart 1.svg" alt="heart" class="heart">
-                            <p class="text_likes">9.5K</p>
-                        </div>
-                        <div class="for_comment">
-                            <img src="./static/media/Star.svg" alt="star" class="star">
-                            <p class="count_comment">4.5<span>(115)</span></p>
-                        </div>
-                    </div>
                     <button><img src="./static/media/favorite.svg" alt="favorite" class="button_favorite"></button>
                 </div>
                 <div class="description">
@@ -102,6 +92,7 @@
             </div>
         </div>
     </footer>
+    <script type="module" src="./static/js/header.js"></script>
     <script type="module" src="./static/js/recipe.js"></script>
 </body>
 </html>

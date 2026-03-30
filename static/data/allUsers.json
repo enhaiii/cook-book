@@ -19,7 +19,7 @@
         "name": "Мария",
         "password": "123456789Y",
         "email": "marIII@gmail.com",
-        "avatar": "./static/media/maria.jpg",
+        "avatar": "./static/media/maria.svg",
         "favorites": [1, 2, 3],
         "reviews": [2],
         "grades": {
