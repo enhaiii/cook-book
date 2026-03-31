@@ -3,43 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Главная</title>
-    <link rel="stylesheet" href="../static/style/favorite.css">
+    <title>Избранное</title>
+    <link rel="stylesheet" href="/static/style/favorite.css">
 </head>
 <body>
     <header>
         <div class="menu">
             <div class="head_content">
-                <img src="./static/media/logo.svg" alt="logo" class="logo">
+                <img src="/static/media/logo.svg" alt="logo" class="logo">
                 <div class="search">
                     <input type="text" placeholder="Поиск рецепта.." id="searchInput">
-                    <a href="#" id="searchButton"><img src="./static/media/lupa.svg" alt="lupa" class="lupa"></a>
+                    <a href="#" id="searchButton"><img src="/static/media/lupa.svg" alt="lupa" class="lupa"></a>
                 </div>
                 <div class="pages">
                     <a href="main.html" class="name_page">Рецепты</a>
-                    <a href="favorite.html"><img src="./static/media/favorite.svg" alt="favorite" class="favorite"></a>
-                    <a href="profile.html"><img src="./static/media/profile.svg" alt="profile" class="profile"></a>
                 </div>
             </div>
         </div>
     </header>        
     <main>
         <div class="content">
-            <div class="for_cards">
-                <a href="recipe.html">
-                    <div class="card">
-                        <div class="for_puncake">
-                            <div class="for_time">
-                                <img src="../static/media/clock.svg" alt="clock" class="clock">
-                                <p class="time">30 мин</p>
-                            </div>
-                        </div>
-                        <div class="text_block">
-                            <p class="name_recipe">Панкейки</p>
-                            <p class="description_recipe">Один из самых популярных американских завтраков выглядит именно так. Пышные и чуточку пористые панкейки — это нечто среднее между оладьями и блинами.  В них добавляют масло..</p>
-                        </div>
-                    </div>
-                </a>
+            <div class="for_cards" id="favoritesContainer">
+                <!-- Сюда будут загружаться избранные рецепты -->
             </div>
         </div>
     </main>
@@ -47,7 +32,7 @@
         <div class="main_footer">
             <div class="footer_content">
                 <div class="top">
-                    <img src="./static/media/logo.svg" alt="logo" class="logo_footer">
+                    <img src="/static/media/logo.svg" alt="logo" class="logo_footer">
                     <div class="column">
                         <p class="text_page">Рецепты</p>
                         <p class="text_page">Профиль</p>
@@ -63,5 +48,8 @@
             </div>
         </div>
     </footer>
+
+    <script type="module" src="/static/js/header.js"></script>
+    <script type="module" src="/static/js/favorite.js"></script>
 </body>
 </html>
