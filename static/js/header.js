@@ -37,7 +37,6 @@ function updateHeader() {
     }
 }
 
-// Обработчик клика по кнопке входа
 document.addEventListener('click', (e) => {
     const signInBtn = document.querySelector('.sign_in');
     if (e.target === signInBtn || signInBtn?.contains(e.target)) {
@@ -45,5 +44,4 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// Обновляем шапку при загрузке страницы
 document.addEventListener('DOMContentLoaded', updateHeader);

@@ -117,7 +117,7 @@ export class Storage {
             parsedComments = defaultComments;
             this.saveComments(defaultComments);
         }
-        // Обогащаем именами и аватарками
+
         let users = this.getUsers();
         parsedComments = parsedComments.map(comment => {
             if (!comment.userName || !comment.userAvatar) {
@@ -145,11 +145,11 @@ export class Storage {
             id: comments.length + 1,
             recipeId: recipeId,
             userId: userId,
-            grade: grade,        // поле grade
+            grade: grade,
             comm: comm,
             date: date || new Date().toLocaleDateString('ru-RU')
         };
-        // Добавляем userName и userAvatar для отображения
+
         newComment.userName = user.name;
         newComment.userAvatar = user.avatar || './static/media/default-avatar.svg';
         

@@ -2,7 +2,6 @@ import { Storage } from "./storage.js";
 
 const storage = new Storage();
 
-// Добавляем недостающую функцию
 function escapeHtml(text) {
     if (!text) return '';
     const div = document.createElement('div');
@@ -36,7 +35,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let allRecipes = [];
 
-    // Исправленная функция отображения карточек
     function loadAndDisplayRecipes(recipesToShow) {
         container.innerHTML = '';
         const currentUser = storage.getCurrentUser();
@@ -46,7 +44,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const isFav = currentUser && currentUser.favorites && currentUser.favorites.includes(recipe.id);
             const heartSrc = isFav ? './static/media/click_favorite.svg' : './static/media/favorite.svg';
 
-            // Кнопка избранного только для авторизованных
             const favButtonHtml = currentUser ? `
                 <button class="favorite-btn" data-id="${recipe.id}">
                     <img src="${heartSrc}" alt="favorite" class="favorite-icon" style="width:30px; cursor:pointer;">
@@ -77,7 +74,6 @@ document.addEventListener('DOMContentLoaded', function() {
         attachFavoriteHandlers();
     }
 
-    // Обработчики для кнопок избранного
     function attachFavoriteHandlers() {
         document.querySelectorAll('.favorite-btn').forEach(btn => {
             btn.removeEventListener('click', favoriteClickHandler);
@@ -115,7 +111,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Загрузка данных
     fetch('/static/data/recipe.json')
         .then(response => {
             if (!response.ok) throw new Error(`Ошибка загрузки: ${response.status}`);
@@ -126,7 +121,6 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log(`Загружено ${recipes.length} рецептов`);
             loadAndDisplayRecipes(allRecipes);
 
-            // Категории
             const categoryLinks = document.querySelectorAll('.name_category');
             categoryLinks.forEach(link => {
                 link.addEventListener('click', (e) => {
@@ -144,7 +138,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
 
-            // Поиск
             function searchRecipes() {
                 const query = searchInput.value.trim().toLowerCase();
                 const results = storage.searchRecipes(query);
@@ -175,7 +168,6 @@ document.addEventListener('DOMContentLoaded', function() {
             container.innerHTML = `<div style="text-align:center;padding:60px;">Не удалось загрузить рецепты</div>`;
         });
 
-    // Меню категорий (стрелка)
     if (arrow && menu) {
         arrow.addEventListener('click', (event) => {
             event.preventDefault();

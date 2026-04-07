@@ -2,7 +2,6 @@ import { Storage } from "./storage.js";
 
 const storage = new Storage();
 
-// Вспомогательные функции (аналогичны тем, что на главной странице)
 function truncateText(text, maxLength) {
     if (!text) return 'Описание отсутствует';
     if (text.length <= maxLength) return text;
@@ -21,10 +20,8 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Создание HTML карточки рецепта (такой же, как на главной, но с сердечком для удаления)
 function createRecipeCard(recipe, isFavorite = true) {
     const shortDescription = truncateText(recipe.description, 190);
-    // Иконка сердца: активная (удалить) или неактивная? На странице избранного всегда активная.
     const heartSrc = isFavorite ? './static/media/click_favorite.svg' : './static/media/favorite.svg';
     return `
         <a href="recipe.html?id=${recipe.id}">
@@ -49,14 +46,12 @@ function createRecipeCard(recipe, isFavorite = true) {
     `;
 }
 
-// Отображение карточек
 function displayRecipes(recipes, container) {
     if (!recipes || recipes.length === 0) {
         container.innerHTML = '<p class="message">У вас пока нет избранных рецептов. Добавьте их на странице рецепта!</p>';
         return;
     }
     container.innerHTML = recipes.map(recipe => createRecipeCard(recipe, true)).join('');
-    // Добавляем обработчики для кнопок удаления
     document.querySelectorAll('.favorite-btn').forEach(btn => {
         btn.addEventListener('click', async (e) => {
             e.preventDefault();
@@ -69,10 +64,9 @@ function displayRecipes(recipes, container) {
             }
             const updatedUser = storage.toggleFavorite(currentUser.id, recipeId);
             if (updatedUser) {
-                // Удаляем карточку из DOM
                 const card = btn.closest('.card');
                 if (card) card.remove();
-                // Если больше нет карточек, показываем сообщение
+
                 if (container.children.length === 0) {
                     container.innerHTML = '<p class="message">У вас пока нет избранных рецептов.</p>';
                 }
@@ -83,14 +77,12 @@ function displayRecipes(recipes, container) {
     });
 }
 
-// Поиск среди избранных рецептов
 function searchFavorites(allFavorites, query) {
     if (!query) return allFavorites;
     const lowerQuery = query.toLowerCase().trim();
     return allFavorites.filter(recipe => recipe.title.toLowerCase().includes(lowerQuery));
 }
 
-// Основная функция загрузки и инициализации
 async function loadFavorites() {
     const container = document.getElementById('favoritesContainer');
     const searchInput = document.getElementById('searchInput');
@@ -119,19 +111,15 @@ async function loadFavorites() {
             return;
         }
 
-        // Сохраняем оригинальный список для поиска
         let currentFavorites = [...favoriteRecipes];
 
-        // Функция обновления отображения (с учётом поиска)
         const updateDisplay = (query) => {
             const filtered = searchFavorites(currentFavorites, query);
             displayRecipes(filtered, container);
         };
 
-        // Первоначальное отображение
         updateDisplay('');
 
-        // Обработчики поиска
         const handleSearch = () => {
             const query = searchInput ? searchInput.value.trim() : '';
             updateDisplay(query);

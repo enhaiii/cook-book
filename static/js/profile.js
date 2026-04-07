@@ -20,7 +20,6 @@ if (!currentUser) {
     window.location.href = 'login.html';
 }
 
-// Загрузка данных пользователя
 function loadUserData() {
     currentUser = storage.getCurrentUser();
     if (!currentUser) return;
@@ -44,7 +43,6 @@ function loadUserData() {
     }
 }
 
-// Сохранение аватарки (DataURL)
 function saveAvatar(dataUrl) {
     const updated = storage.updateUser(currentUser.id, { avatar: dataUrl });
     if (updated) {
@@ -55,23 +53,19 @@ function saveAvatar(dataUrl) {
     }
 }
 
-// Обработчик кнопки "Изменить фото"
 changeAvatarBtn.addEventListener('click', () => {
     avatarInput.click();
 });
 
-// Обработчик выбора файла
 avatarInput.addEventListener('change', (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
-    // Проверка типа файла (только изображения)
     if (!file.type.startsWith('image/')) {
         alert('Пожалуйста, выберите изображение');
         return;
     }
 
-    // Ограничение размера (например, 2 МБ)
     if (file.size > 2 * 1024 * 1024) {
         alert('Размер изображения не должен превышать 2 МБ');
         return;
@@ -87,17 +81,14 @@ avatarInput.addEventListener('change', (event) => {
     };
     reader.readAsDataURL(file);
 
-    // Очищаем input, чтобы можно было выбрать тот же файл повторно
     avatarInput.value = '';
 });
 
-// Валидация email
 function isValidEmail(email) {
     const allowedDomains = ['@gmail.com', '@mail.ru'];
     return allowedDomains.some(domain => email.toLowerCase().endsWith(domain));
 }
 
-// Сохранение данных профиля (email, дата, пол)
 saveBtn.addEventListener('click', () => {
     const newEmail = emailInput.value.trim();
     const newBirthdate = birthdateInput.value;
@@ -135,11 +126,9 @@ saveBtn.addEventListener('click', () => {
     }
 });
 
-// Выход
 logoutBtn.addEventListener('click', () => {
     storage.logout();
     window.location.href = 'login.html';
 });
 
-// Инициализация
 loadUserData();

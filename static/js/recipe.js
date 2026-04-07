@@ -51,13 +51,11 @@ function displayComments(comments, recipeId) {
     container.innerHTML = html;
 }
 
-// Обновление среднего рейтинга (звёзды)
 function updateAverageRatingUI(rating) {
     const avgElem = document.querySelector('.avg_reviews');
     if (avgElem) avgElem.textContent = rating.average.toFixed(1);
 }
 
-// Обновление общего количества комментариев (все комментарии, включая старые)
 function updateCommentCount(comments, recipeId) {
     const countElem = document.querySelector('.count_comm');
     if (!countElem) return;
@@ -81,15 +79,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const recipe = recipes.find(r => r.id == recipeId);
             if (!recipe) throw new Error('Рецепт не найден');
 
-            // Заполняем данные рецепта
             document.getElementById('recipeTitle').textContent = recipe.title;
             document.getElementById('recipeDescription').textContent = recipe.description;
 
-            // Главное изображение
             const titleImage = document.querySelector('.title_image');
             if (titleImage && recipe.img) titleImage.src = recipe.img;
 
-            // Ингредиенты
             const ingredientsContainer = document.getElementById('ingredientsList');
             if (ingredientsContainer && recipe.ingredients) {
                 ingredientsContainer.innerHTML = '';
@@ -104,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
-            // Шаги
             const stepsContainer = document.getElementById('stepsContainer');
             if (stepsContainer && recipe.steps) {
                 stepsContainer.innerHTML = '';
@@ -120,7 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
-            // ===== ИЗБРАННОЕ =====
             const favImg = document.querySelector('.button_favorite');
             const currentUser = storage.getCurrentUser();
             if (favImg) {
@@ -141,7 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
-            // ===== ЗВЁЗДЫ ДЛЯ НОВОГО ОТЗЫВА =====
             const ratingStars = document.querySelectorAll('.greyStar');
             let selectedRating = 0;
             if (ratingStars.length) {
@@ -161,15 +153,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
-            // ===== КОММЕНТАРИИ =====
             let comments = storage.getComments();
             displayComments(comments, recipeId);
-            updateCommentCount(comments, recipeId);          // общее количество
+            updateCommentCount(comments, recipeId);
 
-            // Пересчитываем средний рейтинг (на основе комментариев с оценками)
             storage.updateRecipeAverageRating(recipeId);
 
-            // Получаем обновлённый рецепт с актуальным rating
             const updatedRecipes = storage.getRecipe();
             const updatedRecipe = updatedRecipes.find(r => r.id == recipeId);
             if (updatedRecipe && updatedRecipe.rating) {
@@ -178,7 +167,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateAverageRatingUI({ average: 0, count: 0 });
             }
 
-            // ===== ОТПРАВКА НОВОГО КОММЕНТАРИЯ =====
             const sendButton = document.querySelector('.send');
             const commentInput = document.querySelector('.input_comment');
 
@@ -196,7 +184,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         return;
                     }
 
-                    // ✅ Используем saveComment с передачей grade
                     storage.saveComment(
                         currentUser.id,
                         Number(recipeId),
@@ -205,12 +192,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         selectedRating > 0 ? selectedRating : null
                     );
 
-                    // Обновляем отображение
                     const allComments = storage.getComments();
                     displayComments(allComments, recipeId);
                     updateCommentCount(allComments, recipeId);
-                    
-                    // Пересчитываем рейтинг
+
                     storage.updateRecipeAverageRating(recipeId);
                     const latestRecipes = storage.getRecipe();
                     const latestRecipe = latestRecipes.find(r => r.id == recipeId);
@@ -218,7 +203,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         updateAverageRatingUI(latestRecipe.rating);
                     }
 
-                    // Очищаем форму
                     commentInput.value = '';
                     selectedRating = 0;
                     if (ratingStars.length) {

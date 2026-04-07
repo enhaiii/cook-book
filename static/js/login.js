@@ -2,7 +2,6 @@ import { Storage } from "./storage.js";
 
 const storage = new Storage();
 
-// Хеширование пароля (стабильное для латиницы, цифр, спецсимволов)
 function hashPassword(password) {
     try {
         return btoa(encodeURIComponent(password));
@@ -12,15 +11,13 @@ function hashPassword(password) {
     }
 }
 
-// Проверка пароля (с учётом старых открытых паролей)
 function checkPassword(inputPassword, storedPassword) {
     const inputHash = hashPassword(inputPassword);
     if (inputHash === storedPassword) return true;
-    if (inputPassword === storedPassword) return true; // старый открытый пароль
+    if (inputPassword === storedPassword) return true;
     return false;
 }
 
-// Элементы DOM
 const nameInput = document.getElementById('loginName');
 const emailInput = document.getElementById('loginEmail');
 const passwordInput = document.getElementById('loginPassword');
@@ -128,7 +125,7 @@ loginBtn.addEventListener('click', () => {
         } else if (!passwordValid) {
             showError(passwordFail, 'Неверный пароль');
         } else {
-            // Если пароль хранился открытым – обновляем на хеш
+            
             if (existingUser.password !== hashPassword(password)) {
                 existingUser.password = hashPassword(password);
                 storage.saveUsers(users);
