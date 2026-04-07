@@ -9,15 +9,12 @@ function updateHeader() {
 
     if (!pagesContainer) return;
 
-    // Находим существующие ссылки на избранное и профиль (если есть)
     let favLink = pagesContainer.querySelector('.favorite-link');
     let profileLink = pagesContainer.querySelector('.profile-link');
 
     if (isLoggedIn) {
-        // Скрыть кнопку входа
         if (signInBtn) signInBtn.style.display = 'none';
 
-        // Добавить ссылки, если их нет
         if (!favLink) {
             favLink = document.createElement('a');
             favLink.href = 'favorite.html';
@@ -33,10 +30,8 @@ function updateHeader() {
             pagesContainer.appendChild(profileLink);
         }
     } else {
-        // Показать кнопку входа
         if (signInBtn) signInBtn.style.display = 'block';
 
-        // Удалить ссылки, если они есть
         if (favLink) favLink.remove();
         if (profileLink) profileLink.remove();
     }

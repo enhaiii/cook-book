@@ -196,26 +196,21 @@ document.addEventListener('DOMContentLoaded', () => {
                         return;
                     }
 
-                    const newComment = {
-                        id: comments.length + 1,
-                        recipeId: Number(recipeId),
-                        userId: currentUser.id,
-                        userName: currentUser.name,
-                        userAvatar: currentUser.avatar || './static/media/default-avatar.svg',
-                        comm: commentText,
-                        rating: selectedRating > 0 ? selectedRating : null,
-                        date: new Date().toLocaleDateString('ru-RU')
-                    };
+                    // ✅ Используем saveComment с передачей grade
+                    storage.saveComment(
+                        currentUser.id,
+                        Number(recipeId),
+                        commentText,
+                        new Date().toLocaleDateString('ru-RU'),
+                        selectedRating > 0 ? selectedRating : null
+                    );
 
+                    // Обновляем отображение
                     const allComments = storage.getComments();
-                    allComments.push(newComment);
-                    storage.saveComments(allComments);
-
-                    // Обновляем отображение комментариев
                     displayComments(allComments, recipeId);
-                    updateCommentCount(allComments, recipeId);   // общее количество
-
-                    // Пересчитываем и обновляем средний рейтинг
+                    updateCommentCount(allComments, recipeId);
+                    
+                    // Пересчитываем рейтинг
                     storage.updateRecipeAverageRating(recipeId);
                     const latestRecipes = storage.getRecipe();
                     const latestRecipe = latestRecipes.find(r => r.id == recipeId);

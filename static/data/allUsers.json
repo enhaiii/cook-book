@@ -6,12 +6,7 @@
         "email": "maksim@gmail.com",
         "avatar": "./static/media/maksim.svg",
         "favorites": [1, 2],
-        "reviews": [1],
-        "grades": {
-            "1": 5,
-            "2": 5,
-            "3": 4
-        }
+        "reviews": [1]
     },
 
     {
@@ -21,12 +16,7 @@
         "email": "marIII@gmail.com",
         "avatar": "./static/media/maria.svg",
         "favorites": [1, 2, 3],
-        "reviews": [2],
-        "grades": {
-            "1": 5,
-            "2": 5,
-            "3": 5
-        }
+        "reviews": [2]
     },
 
     {
@@ -36,11 +26,6 @@
         "email": "k1raaA@gmail.com",
         "avatar": "./static/media/kira.svg",
         "favorites": [1],
-        "reviews": [3, 4],
-        "grades": {
-            "1": 5,
-            "2": 4,
-            "3": 3
-        }
+        "reviews": [3, 4]
     }
 ]

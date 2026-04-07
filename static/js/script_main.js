@@ -2,6 +2,14 @@ import { Storage } from "./storage.js";
 
 const storage = new Storage();
 
+// Добавляем недостающую функцию
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 function truncateText(text, maxLength) {
     if (!text) return 'Описание отсутствует';
     if (text.length <= maxLength) return text;
@@ -21,9 +29,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const arrow = document.getElementById('arrow');
     const menu = document.getElementById('categoryMenu');
 
-    console.log('searchInput:', searchInput);
-    console.log('searchButton:', searchButton);
-
     if (!container) {
         console.error('Контейнер не найден');
         return;
@@ -31,30 +36,86 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let allRecipes = [];
 
+    // Исправленная функция отображения карточек
     function loadAndDisplayRecipes(recipesToShow) {
         container.innerHTML = '';
+        const currentUser = storage.getCurrentUser();
+
         for (let recipe of recipesToShow) {
             const shortDescription = truncateText(recipe.description, 190);
+            const isFav = currentUser && currentUser.favorites && currentUser.favorites.includes(recipe.id);
+            const heartSrc = isFav ? './static/media/click_favorite.svg' : './static/media/favorite.svg';
+
+            // Кнопка избранного только для авторизованных
+            const favButtonHtml = currentUser ? `
+                <button class="favorite-btn" data-id="${recipe.id}">
+                    <img src="${heartSrc}" alt="favorite" class="favorite-icon" style="width:30px; cursor:pointer;">
+                </button>
+            ` : '';
+
             const cardHtml = `
-                <a href="recipe.html?id=${recipe.id}">
-                    <div class="card">
-                        <div class="for_recipe" style="background-image: url('${recipe.img}'); background-size: cover; background-position: center;">
+                <a href="recipe.html?id=${recipe.id}" class="recipe-card-link">
+                    <div class="card" data-recipe-id="${recipe.id}" style="height">
+                        <div class="favorite-action">
+                            ${favButtonHtml}
+                        </div>
+                        <div class="for_recipe" style="background-image: url('${recipe.img}'); width: 447px; height: 320px; background-size: cover; background-position: center; background-repeat: no-repeat; border-radius: 15px; display: flex; align-items: flex-end; justify-content: flex-end;  padding: 0px 20px 10px 10px;">
                             <div class="for_time">
                                 <img src="./static/media/clock.svg" alt="clock" class="clock">
                                 <p class="time">${recipe.cookingTime} мин</p>
                             </div>
                         </div>
                         <div class="text_block">
-                            <p class="name_recipe">${recipe.title}</p>
-                            <p class="description_recipe">${shortDescription}</p>
+                            <p class="name_recipe">${escapeHtml(recipe.title)}</p>
+                            <p class="description_recipe">${escapeHtml(shortDescription)}</p>
                         </div>
                     </div>
                 </a>
             `;
             container.innerHTML += cardHtml;
         }
+        attachFavoriteHandlers();
     }
 
+    // Обработчики для кнопок избранного
+    function attachFavoriteHandlers() {
+        document.querySelectorAll('.favorite-btn').forEach(btn => {
+            btn.removeEventListener('click', favoriteClickHandler);
+            btn.addEventListener('click', favoriteClickHandler);
+        });
+    }
+
+    async function favoriteClickHandler(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const btn = e.currentTarget;
+        const recipeId = parseInt(btn.dataset.id);
+        const currentUser = storage.getCurrentUser();
+        if (!currentUser) {
+            alert('Войдите, чтобы добавить в избранное');
+            return;
+        }
+        const updatedUser = storage.toggleFavorite(currentUser.id, recipeId);
+        if (updatedUser) {
+            const isFav = updatedUser.favorites.includes(recipeId);
+            const img = btn.querySelector('img');
+            img.src = isFav ? './static/media/click_favorite.svg' : './static/media/favorite.svg';
+            window.dispatchEvent(new CustomEvent('favoritesUpdated', {
+                detail: { userId: currentUser.id, recipeId, isFav }
+            }));
+        }
+    }
+
+    window.addEventListener('favoritesUpdated', (e) => {
+        const { recipeId, isFav } = e.detail;
+        const allFavBtns = document.querySelectorAll(`.favorite-btn[data-id="${recipeId}"]`);
+        allFavBtns.forEach(btn => {
+            const img = btn.querySelector('img');
+            img.src = isFav ? './static/media/click_favorite.svg' : './static/media/favorite.svg';
+        });
+    });
+
+    // Загрузка данных
     fetch('/static/data/recipe.json')
         .then(response => {
             if (!response.ok) throw new Error(`Ошибка загрузки: ${response.status}`);
@@ -65,13 +126,12 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log(`Загружено ${recipes.length} рецептов`);
             loadAndDisplayRecipes(allRecipes);
 
-            // ===== КАТЕГОРИИ =====
+            // Категории
             const categoryLinks = document.querySelectorAll('.name_category');
             categoryLinks.forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     const category = link.textContent.trim();
-                    console.log('Выбрана категория:', category);
                     const filtered = allRecipes.filter(recipe => {
                         if (recipe.categories && recipe.categories.includes(category)) return true;
                         if (recipe.tags && recipe.tags.includes(category)) return true;
@@ -84,47 +144,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
 
-            // ===== ПОИСК =====
+            // Поиск
             function searchRecipes() {
                 const query = searchInput.value.trim().toLowerCase();
-                console.log('Поиск по запросу:', query);
-                if (query === '') {
-                    loadAndDisplayRecipes(allRecipes);
+                const results = storage.searchRecipes(query);
+                if (results.length === 0) {
+                    container.innerHTML = '<div style="text-align:center;padding:60px;">Рецепты не найдены</div>';
                 } else {
-                    const filtered = allRecipes.filter(recipe =>
-                        recipe.title.toLowerCase().includes(query)
-                    );
-                    console.log('Найдено рецептов:', filtered.length);
-                    if (filtered.length === 0) {
-                        container.innerHTML = '<div style="text-align:center;padding:60px;">😕 Рецепты не найдены</div>';
-                    } else {
-                        loadAndDisplayRecipes(filtered);
-                    }
+                    loadAndDisplayRecipes(results);
                 }
             }
 
             if (searchButton) {
-                console.log('Добавляем обработчик на кнопку поиска');
-                searchButton.addEventListener('click', function(e) {
+                searchButton.addEventListener('click', (e) => {
                     e.preventDefault();
-                    console.log('Клик по кнопке поиска');
                     searchRecipes();
                 });
-            } else {
-                console.warn('Кнопка поиска не найдена!');
             }
-
             if (searchInput) {
-                console.log('Добавляем обработчик на input Enter');
-                searchInput.addEventListener('keypress', function(e) {
+                searchInput.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') {
                         e.preventDefault();
-                        console.log('Нажата Enter в поле поиска');
                         searchRecipes();
                     }
                 });
-            } else {
-                console.warn('Поле ввода поиска не найдено!');
             }
         })
         .catch(error => {
@@ -132,9 +175,9 @@ document.addEventListener('DOMContentLoaded', function() {
             container.innerHTML = `<div style="text-align:center;padding:60px;">Не удалось загрузить рецепты</div>`;
         });
 
-    // ===== МЕНЮ КАТЕГОРИЙ =====
+    // Меню категорий (стрелка)
     if (arrow && menu) {
-        arrow.addEventListener('click', function(event) {
+        arrow.addEventListener('click', (event) => {
             event.preventDefault();
             menu.classList.toggle('hidden');
             arrow.classList.toggle('rotated');
